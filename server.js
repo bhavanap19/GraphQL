@@ -1,8 +1,8 @@
-var express = require('express');
+const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
-var { buildSchema } = require('graphql');
+const { buildSchema } = require('graphql');
 
-var schema = buildSchema(`
+const schema = buildSchema(`
     input PostInput {
         title : String
         content : String
@@ -33,9 +33,9 @@ class Post{
     }
 }
 
-var database = {};
+let database = {};
 
-var root = {
+const root = {
     getPost: ({id}) => {
         if(!database[id]){
             throw new Error(`No post with id ${id}`);
@@ -44,10 +44,10 @@ var root = {
         
     },
     getPosts: () => {
-        var posts = [];
-        for (var id in database){
+        let posts = [];
+        for (let id in database){
             if(database.hasOwnProperty(id)){
-                var post = database[id];
+                let post = database[id];
                 posts.push(new Post(id, post));
             }
         }
@@ -56,7 +56,7 @@ var root = {
     },
 
     createPost: ({input}) =>{
-        var id = require('crypto').randomBytes(10).toString('hex');
+        let id = require('crypto').randomBytes(10).toString('hex');
 
         database[id] = input;
         return new Post(id,input);
@@ -71,7 +71,7 @@ var root = {
     }
 }
 
-var app = express();
+const app = express();
 app.use('/graphql', graphqlHTTP({
     schema,
     rootValue: root,
